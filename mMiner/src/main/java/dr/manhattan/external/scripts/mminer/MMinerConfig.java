@@ -21,15 +21,15 @@ public interface MMinerConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "bankOres",
-			name = "Bank ores?",
-			description = "Bank the ores.",
+			keyName = "maxRockDistance",
+			name = "Maximum rock distance",
+			description = "Maximum distance of a rock in tiles.",
 			position = 1,
 			titleSection = "mainTitle"
 	)
-	default boolean bankOres()
+	default int maxRockDistance()
 	{
-		return true;
+		return 10;
 	}
 
 }

@@ -21,15 +21,15 @@ public interface MChopperConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "bankLogs",
-			name = "Bank logs?",
-			description = "Bank the logs.",
+			keyName = "maxTreeDistance",
+			name = "Maximum tree distance",
+			description = "Maximum distance of a tree in tiles.",
 			position = 1,
 			titleSection = "mainTitle"
 	)
-	default boolean bankLogs()
+	default int maxTreeDistance()
 	{
-		return true;
+		return 10;
 	}
 
 }

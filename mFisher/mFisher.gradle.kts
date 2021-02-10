@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owain van Brakel <https:github.com/Owain94>
+ * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,22 +23,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "ProjectM Scripts"
+version = "0.0.1"
 
-include(":mChopper")
-include(":mMiner")
-include(":mFisher")
-include(":scriptTemplate")
+project.extra["PluginName"] = "MFisher"
+project.extra["PluginDescription"] = "Fisher"
 
-for (project in rootProject.children) {
-    project.apply {
-        projectDir = file(name)
-        buildFileName = "$name.gradle.kts"
+dependencies {
+    annotationProcessor(group = "org.projectlombok", name = "lombok", version = "1.18.12")
+    annotationProcessor(group = "org.pf4j", name = "pf4j", version = "3.2.0")
+    compileOnly(group = "dr.manhattan.externals", name = "api", version = "+")
+}
 
-        require(projectDir.isDirectory) { "Project '${project.path} must have a $projectDir directory" }
-        require(buildFile.isFile) { "Project '${project.path} must have a $buildFile build script" }
+tasks {
+    jar {
+        manifest {
+            attributes(
+                mapOf(
+                    "Plugin-Version" to project.version,
+                    "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
+                    "Plugin-Provider" to project.extra["PluginProvider"],
+                    "Plugin-Dependencies" to nameToId("ProjectM"),
+                    "Plugin-Description" to project.extra["PluginDescription"],
+                    "Plugin-License" to project.extra["PluginLicense"]
+                )
+            )
+        }
     }
 }
-include("api")
-include("scriptTemplate")
-include("mFisher")
+

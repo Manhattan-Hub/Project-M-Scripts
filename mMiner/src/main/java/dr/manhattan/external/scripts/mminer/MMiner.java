@@ -2,11 +2,11 @@ package dr.manhattan.external.scripts.mminer;
 
 import dr.manhattan.external.api.MScript;
 import dr.manhattan.external.api.interact.MInteract;
+import dr.manhattan.external.api.items.MInventory;
 import dr.manhattan.external.api.objects.MObjects;
-import dr.manhattan.external.api.player.MInventory;
 import dr.manhattan.external.api.player.MPlayer;
-import net.runelite.api.Client;
 import net.runelite.api.GameObject;
+import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.client.eventbus.EventBus;
@@ -15,6 +15,8 @@ import net.runelite.client.plugins.PluginType;
 import org.pf4j.Extension;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @Extension
 @PluginDescriptor(
@@ -26,11 +28,9 @@ import javax.inject.Inject;
 )
 public class MMiner extends MScript {
     private static final Object BUS_OBJ = new Object();
-    final int[] IDS = {1161, 10943, 11360, 11361};
     final String[] ACTIONS = {"Mine"};
-    final String[] ORES = {"Copper ore", "Tin ore"};
-    @Inject
-    private Client client;
+    final String[] ORES = {"Copper ore", "Tin ore", "Iron ore", "Clay"};
+
     @Inject
     private EventBus eventBus;
 
@@ -54,17 +54,28 @@ public class MMiner extends MScript {
     private boolean ignoreIdle = false;
 
     private void mineRocks() {
-        GameObject rock = new MObjects()
-                .idEquals(IDS)
-                .hasAction(ACTIONS)
-                .isWithinDistance(MPlayer.location(), 20 )
-                .result()
-                .nearestTo(MPlayer.get());
-        if (rock != null) {
-            log.info( rock.getId() + " at " + rock.getWorldLocation().toString());
-            rockPos = rock.getWorldLocation();
-            MInteract.GameObject(rock, ACTIONS);
-            ignoreIdle = false;
+
+        List<List<Integer>> rockIds = new ArrayList<>();
+        int miningLevel = MPlayer.getLevel(Skill.MINING);
+        if(miningLevel >= 15){
+            rockIds.add(List.of(11364, 11365));
+        }
+        rockIds.add(List.of(1161, 10943, 11360, 11361, 11362, 11363));
+
+
+        for(List<Integer> ids: rockIds){
+            GameObject rock = new MObjects()
+                    .idEquals(ids)
+                    .hasAction(ACTIONS)
+                    .result()
+                    .nearestTo(MPlayer.get());
+            if (rock != null) {
+                log.info( rock.getId() + " at " + rock.getWorldLocation().toString());
+                rockPos = rock.getWorldLocation();
+                MInteract.gameObject(rock, ACTIONS);
+                ignoreIdle = false;
+                return;
+            }
         }
     }
 
