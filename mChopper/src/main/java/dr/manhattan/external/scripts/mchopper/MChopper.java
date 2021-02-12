@@ -59,8 +59,8 @@ public class MChopper extends MScript {
             GameObject tree = new MObjects()
                     .hasName(trees)
                     .hasAction("Chop down")
-                    .result()
-                    .nearestTo(MPlayer.get());
+                    .starNearest();
+
             if (tree != null) {
                 log.info( tree.getId() + " at " + tree.getWorldLocation().toString());
                 MInteract.gameObject(tree, "Chop down");

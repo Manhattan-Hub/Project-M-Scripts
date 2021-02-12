@@ -5,9 +5,7 @@ buildscript {
 }
 
 plugins {
-    checkstyle
     java
-    id("com.simonharrer.modernizer") version "2.1.0-1" apply false
     id("com.github.ben-manes.versions") version "0.36.0"
     id("se.patrikerdes.use-latest-versions") version "0.2.15"
 }
@@ -63,8 +61,6 @@ subprojects {
     }
 
     apply<JavaPlugin>()
-    apply(plugin = "checkstyle")
-    apply(plugin = "com.simonharrer.modernizer")
 
     dependencies {
         compileOnly(group = "com.openosrs", name = "http-api", version = "3.5.4")
@@ -79,12 +75,6 @@ subprojects {
 
     }
 
-    checkstyle {
-        maxWarnings = 0
-        toolVersion = "8.25"
-        isShowViolations = true
-        isIgnoreFailures = false
-    }
 
     configure<PublishingExtension> {
         repositories {
@@ -115,10 +105,6 @@ subprojects {
             isReproducibleFileOrder = true
             dirMode = 493
             fileMode = 420
-        }
-
-        withType<Checkstyle> {
-            group = "verification"
         }
 
         register<Copy>("copyDeps") {
